@@ -46,11 +46,15 @@ def opposite_direction(direction):
 
 
 traversalPath = []
-stack = []
+move_history = []
 visited = {}
-stack.append([player.currentRoom.id])
+
 travel_direction = 'n'
-while len(visited) < len(world.rooms):
+previous_room = None
+
+count = 0
+while count < 10:
+    # while len(visited) < len(world.rooms):
     # while len(stack) > 0:
     # current_path = stack.pop()
     # current_room = current_path[-1]
@@ -62,12 +66,16 @@ while len(visited) < len(world.rooms):
         # record potential exits from this room, default to ? for the values if the exits are unexplored
         for direction in exits:
             visited[current_room][direction] = '?'
+        if previous_room is not None:
+            visited[current_room][opposite_direction(
+                travel_direction)] = previous_room
         if travel_direction in visited[current_room] and visited[current_room][travel_direction] == '?':
             # keep track of room you just left
             previous_room = current_room
             # record info between two new graph entries
+            traversalPath.append(travel_direction)
+            move_history.append(travel_direction)
             player.travel(travel_direction)
-            visited[previous_room][travel_direction] = player.currentRoom.id
             # move in travel_direction
         else:
             # find a new direction, move that way
@@ -75,13 +83,14 @@ while len(visited) < len(world.rooms):
                 visited[current_room], len(exits))
             if new_direction == False:
                 travel_direction = opposite_direction(travel_direction)
+            else:
+                travel_direction = new_direction
+            previous_room = current_room
+            traversalPath.append(travel_direction)
+            move_history.append(travel_direction)
+            player.travel(travel_direction)
 
-        # loop through the current room directions, set the first '?' value as the new direction of travel
-
-        # record the current room as the previous room
-        previous_room = current_room
-        # travel in the direction of travel
-        player.travel(travel_direction)
+        visited[previous_room][travel_direction] = player.currentRoom.id
         # record this new room in the dictionary of the previous room
         # get exits of the new room
         # set the previous room in the dictionary as opposite of the direction of travel
@@ -90,11 +99,27 @@ while len(visited) < len(world.rooms):
         # if there is an unexplored direction, set that as the new direction of travel, repeat the process started on line 67
         # if direction of travel is a dead-end and there are no other unexplored directions, set direction of travel as opposite
     elif current_room in visited:
-        # if any of the current room's exits are unexplored
-                # set that direction as direction of travel
+        exits = player.currentRoom.getExits()
+        if available_directions(visited[current_room], len(exits)) is not False:
+            travel_direction = available_directions(
+                visited[current_room], len(exits))
+            previous_room = current_room
+            traversalPath.append(travel_direction)
+            move_history.append(travel_direction)
+            player.travel(travel_direction)
+            visited[previous_room][travel_direction] = player.currentRoom.id
+        else:
+            # if we are hitting a wall...
+            traversalPath.append(travel_direction)
+            player.travel(travel_direction)
+        # if there are unexplored routes...
+            # pick one and run with it
+        # if all routes have been explored
+            # continue in direction of travel until you find an unexplored exit
+    print(traversalPath)
+    print(move_history)
     print(visited)
-    break
-
+    count += 1
 
 # TRAVERSAL TEST
 # visited_rooms = set()
