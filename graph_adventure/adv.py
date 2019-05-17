@@ -137,13 +137,6 @@ while len(visited) < len(world.rooms):
             new_direction = available_directions(
                 visited[current_room], len(exits))
             if new_direction == False:
-                # # backtracking = True
-                # travel_direction = opposite_direction(move_history.pop())
-                # # travel_direction = opposite_direction(travel_direction)
-                # previous_room = current_room
-                # traversalPath.append(travel_direction)
-                # player.travel(travel_direction)
-                # visited[previous_room][travel_direction] = player.currentRoom.id
                 for direction in bfs(current_room):
                     traversalPath.append(direction)
                     player.travel(direction)
@@ -156,14 +149,6 @@ while len(visited) < len(world.rooms):
                 player.travel(travel_direction)
                 visited[previous_room][travel_direction] = player.currentRoom.id
 
-        # visited[previous_room][travel_direction] = player.currentRoom.id
-        # record this new room in the dictionary of the previous room
-        # get exits of the new room
-        # set the previous room in the dictionary as opposite of the direction of travel
-        # if the direction of travel is an optional exit, take that exit and repeat the process started on line 67
-        # if the direction of travel is unavailable, check for another unexplored direction
-        # if there is an unexplored direction, set that as the new direction of travel, repeat the process started on line 67
-        # if direction of travel is a dead-end and there are no other unexplored directions, set direction of travel as opposite
     elif current_room in visited:
         exits = player.currentRoom.getExits()
         if available_directions(visited[current_room], len(exits)) is not False:
@@ -180,35 +165,9 @@ while len(visited) < len(world.rooms):
             for direction in bfs(current_room):
                 traversalPath.append(direction)
                 player.travel(direction)
-
-
-
-            # q = Queue()
-            # path = []
-            # checked = set()
-            # current_room = player.currentRoom.id
-            # q.enqueue(current_room)  # dictionary with 4 directions
-            # while q > 0:
-            #     room = q.dequeue()
-            #     if room not in checked:
-            #         # for each direction in the dictionary of 4 directions
-            #         for direction in visited[room]:
-            #             if visited[room][direction] == '?':
-            #                 checked.add(room)
-            #                 path.append(direction)
-            #                 break
-            #             else:
-            #                 checked.add(room)
-            #                 new_room = visited[room][direction]
-            #                 path.append(direction)
-            #                 if new_room not in checked:
-            #                     q.enqueue(new_room)
-
     print(traversalPath)
     print(move_history)
     print(visited)
-    # return traversalPath
-    # count += 1
 
 # TRAVERSAL TEST
 visited_rooms = set()
